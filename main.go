@@ -9,23 +9,25 @@ import (
 )
 
 /*
-read in quiz via CSV file
-user can specify '-csv' flag and file name
-otherwise, default to 'problems.csv'
+Read in quiz via CSV file
+User can specify '-csv' flag and file name
+Otherwise, default to 'problems.csv'
 
-ask user all questions, keep track of score
+Ask user all questions, keep track of score
 
-output number of correct responses vs total questions
+Output number of correct responses vs total questions
 */
 
 func main() {
-	// Open problems.csv
-	csvFile, err := os.Open("problems.csv")
+	// Check if os.Args has -csv filename.csv
+	// Otherwise, use problems.csv as a default
+	fmt.Println(os.Args)
 
+	// Open problems.csv and use a new csv reader
+	csvFile, err := os.Open("problems.csv")
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	csvReader := csv.NewReader(csvFile)
 
 	// Read and print every line of the csv
@@ -38,6 +40,10 @@ func main() {
 
 		if err != nil {
 			log.Fatal(err)
+		}
+
+		if len(record) < 2 {
+			log.Fatal("Malformed csv file. Each record in csv file must have a question and answer.")
 		}
 
 		question, answer := record[0], record[1]
