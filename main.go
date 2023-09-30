@@ -40,6 +40,18 @@ func main() {
 			log.Fatal(err)
 		}
 
-		fmt.Println(record)
+		question, answer := record[0], record[1]
+
+		fmt.Println("Question:", question)
+
+		userAnswer := getUserAnswer()
+
+		fmt.Printf("Your answer: %v (Correct answer: %v)\n", userAnswer, answer)
 	}
+}
+
+func getUserAnswer() string {
+	var userAnswer string
+	fmt.Scanln(&userAnswer)
+	return userAnswer
 }
