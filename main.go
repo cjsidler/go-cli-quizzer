@@ -30,6 +30,9 @@ func main() {
 	}
 	csvReader := csv.NewReader(csvFile)
 
+	totalQuestions := 0
+	correctAnswers := 0
+
 	// Read and print every line of the csv
 	for {
 		record, err := csvReader.Read()
@@ -52,8 +55,17 @@ func main() {
 
 		userAnswer := getUserAnswer()
 
-		fmt.Printf("Your answer: %v (Correct answer: %v)\n", userAnswer, answer)
+		if userAnswer == answer {
+			fmt.Printf("Correct! Your answer: %v (Correct answer: %v)\n", userAnswer, answer)
+			correctAnswers++
+		} else {
+			fmt.Printf("Incorrect. Your answer: %v (Correct answer: %v)\n", userAnswer, answer)
+		}
+
+		totalQuestions++
 	}
+
+	fmt.Printf("You answered %v questions correctly out of a total of %v questions.\n", correctAnswers, totalQuestions)
 }
 
 func getUserAnswer() string {
