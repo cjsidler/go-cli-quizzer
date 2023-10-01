@@ -11,7 +11,7 @@ import (
 /*
 Read in quiz via CSV file
 User can specify '-csv' flag and file name
-Otherwise, default to 'problems.csv'
+Otherwise, defaults to 'problems.csv'
 
 Ask user all questions, keep track of score
 
@@ -19,21 +19,20 @@ Output number of correct responses vs total questions
 */
 
 func main() {
-	// Check if os.Args has -csv filename.csv
-	// Otherwise, use problems.csv as a default
-	fmt.Println(os.Args)
 
-	// Open problems.csv and use a new csv reader
-	csvFile, err := os.Open("problems.csv")
+	// Get csv filename and open using a new csv reader
+	filename := getFilename()
+	csvFile, err := os.Open(filename)
 	if err != nil {
 		log.Fatal(err)
 	}
 	csvReader := csv.NewReader(csvFile)
 
+	// Initiate statistics variables
 	totalQuestions := 0
 	correctAnswers := 0
 
-	// Read and print every line of the csv
+	// Ask each question in csv and get answer from user
 	for {
 		record, err := csvReader.Read()
 
@@ -66,9 +65,21 @@ func main() {
 
 	}
 
-	fmt.Printf("You answered %v questions correctly out of a total of %v questions.\n", correctAnswers, totalQuestions)
+	// Show the user's stats
+	fmt.Printf("You answered %v/%v correct!\n", correctAnswers, totalQuestions)
 }
 
+// Checks if os.Args has "-csv filename.csv"
+// Otherwise, returns "problems.csv" as a default
+func getFilename() string {
+	if len(os.Args) == 3 && os.Args[1] == "-csv" {
+		return os.Args[2]
+	} else {
+		return "problems.csv"
+	}
+}
+
+// Gets user input from stdin
 func getUserAnswer() string {
 	var userAnswer string
 	fmt.Scanln(&userAnswer)
