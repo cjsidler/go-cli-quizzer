@@ -49,20 +49,21 @@ func main() {
 			log.Fatal("Malformed csv file. Each record in csv file must have a question and answer.")
 		}
 
+		totalQuestions++
+
 		question, answer := record[0], record[1]
 
-		fmt.Println("Question:", question)
+		fmt.Printf("Question #%v: %v = ", totalQuestions, question)
 
 		userAnswer := getUserAnswer()
 
 		if userAnswer == answer {
-			fmt.Printf("Correct! Your answer: %v (Correct answer: %v)\n", userAnswer, answer)
+			fmt.Println("Correct!")
 			correctAnswers++
 		} else {
 			fmt.Printf("Incorrect. Your answer: %v (Correct answer: %v)\n", userAnswer, answer)
 		}
 
-		totalQuestions++
 	}
 
 	fmt.Printf("You answered %v questions correctly out of a total of %v questions.\n", correctAnswers, totalQuestions)
