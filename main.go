@@ -34,7 +34,7 @@ func main() {
 
 	// Ask each question in csv and get answer from user
 	for {
-		record, err := csvReader.Read()
+		csvLine, err := csvReader.Read()
 
 		if err == io.EOF {
 			break
@@ -44,17 +44,14 @@ func main() {
 			log.Fatal(err)
 		}
 
-		if len(record) < 2 {
-			log.Fatal("Malformed csv file. Each record in csv file must have a question and answer.")
+		if len(csvLine) != 2 {
+			log.Fatal("Malformed csv file. Each line in csv file must have one question and one answer.")
 		}
 
 		totalQuestions++
 
-		question, answer := record[0], record[1]
-
-		fmt.Printf("Question #%v: %v = ", totalQuestions, question)
-
-		userAnswer := getUserAnswer()
+		question, answer := csvLine[0], csvLine[1]
+		userAnswer := getUserAnswer(question, answer, totalQuestions)
 
 		if userAnswer == answer {
 			fmt.Println("Correct!")
@@ -80,8 +77,10 @@ func getFilename() string {
 }
 
 // Gets user input from stdin
-func getUserAnswer() string {
+func getUserAnswer(question string, answer string, totalQuestions int) string {
 	var userAnswer string
+
+	fmt.Printf("Question #%v: %v = ", totalQuestions, question)
 	fmt.Scanln(&userAnswer)
 	return userAnswer
 }
