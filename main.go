@@ -75,10 +75,10 @@ func parseLines(lines [][]string) []problem {
 }
 
 // Gets user input from stdin
-func getUserAnswer(problem problem, totalQuestions int) string {
+func getUserAnswer(problem problem, problemNumber int) string {
 	var userAnswer string
 
-	fmt.Printf("Question #%v: %v = ", totalQuestions, problem.question)
+	fmt.Printf("Question #%v: %v = ", problemNumber, problem.question)
 	fmt.Scanln(&userAnswer)
 
 	return userAnswer
