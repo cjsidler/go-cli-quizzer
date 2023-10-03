@@ -4,7 +4,6 @@ import (
 	"encoding/csv"
 	"flag"
 	"fmt"
-	"io"
 	"log"
 	"os"
 )
@@ -19,6 +18,11 @@ Ask user all questions, keep track of score
 Output number of correct responses vs total questions
 */
 
+type problem struct {
+	question string
+	answer   string
+}
+
 func main() {
 	csvFilename := flag.String("csv", "problems.csv", "a csv file in the format of `question,answer`")
 	flag.Parse()
@@ -31,48 +35,51 @@ func main() {
 	csvReader := csv.NewReader(csvFile)
 
 	// Initiate statistics variables
-	totalQuestions := 0
 	correctAnswers := 0
 
-	// Ask each question in csv and get answer from user
-	for {
-		csvLine, err := csvReader.Read()
+	csvLines, err := csvReader.ReadAll()
+	if err != nil {
+		log.Fatal(err)
+	}
 
-		if err == io.EOF {
-			break
-		}
+	problems := parseLines(csvLines)
 
-		if err != nil {
-			log.Fatal(err)
-		}
+	// Ask each question in csv and verify answer
+	for i, problem := range problems {
+		currentProblem := i + 1
+		userAnswer := getUserAnswer(problem, currentProblem)
 
-		if len(csvLine) != 2 {
-			log.Fatal("Malformed csv file. Each line in csv file must have one question and one answer.")
-		}
-
-		totalQuestions++
-
-		question, answer := csvLine[0], csvLine[1]
-		userAnswer := getUserAnswer(question, answer, totalQuestions)
-
-		if userAnswer == answer {
+		if userAnswer == problem.answer {
 			fmt.Println("Correct!")
 			correctAnswers++
 		} else {
-			fmt.Printf("Incorrect. Your answer: %v (Correct answer: %v)\n", userAnswer, answer)
+			fmt.Printf("Incorrect. Your answer: %v (Correct answer: %v)\n", userAnswer, problem.answer)
 		}
-
 	}
 
 	// Show the user's stats
-	fmt.Printf("You answered %v/%v correct!\n", correctAnswers, totalQuestions)
+	fmt.Printf("You answered %v/%v correct!\n", correctAnswers, len(problems))
+}
+
+func parseLines(lines [][]string) []problem {
+	problems := make([]problem, len(lines))
+
+	for i, line := range lines {
+		if len(line) != 2 {
+			log.Fatal("Malformed csv file. Each line in csv file must be in the format `question,answer`.")
+		}
+		problems[i] = problem{question: line[0], answer: line[1]}
+	}
+
+	return problems
 }
 
 // Gets user input from stdin
-func getUserAnswer(question string, answer string, totalQuestions int) string {
+func getUserAnswer(problem problem, totalQuestions int) string {
 	var userAnswer string
 
-	fmt.Printf("Question #%v: %v = ", totalQuestions, question)
+	fmt.Printf("Question #%v: %v = ", totalQuestions, problem.question)
 	fmt.Scanln(&userAnswer)
+
 	return userAnswer
 }
