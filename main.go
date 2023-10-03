@@ -65,10 +65,10 @@ func parseLines(lines [][]string) []problem {
 	problems := make([]problem, len(lines))
 
 	for i, line := range lines {
-		if len(line) != 2 {
-			log.Fatal("Malformed csv file. Each line in csv file must be in the format `question,answer`.")
+		problems[i] = problem{
+			question: line[0],
+			answer:   line[1],
 		}
-		problems[i] = problem{question: line[0], answer: line[1]}
 	}
 
 	return problems
