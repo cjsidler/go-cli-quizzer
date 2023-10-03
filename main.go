@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/csv"
+	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -19,10 +20,11 @@ Output number of correct responses vs total questions
 */
 
 func main() {
+	csvFilename := flag.String("csv", "problems.csv", "a csv file in the format of `question,answer`")
+	flag.Parse()
 
 	// Get csv filename and open using a new csv reader
-	filename := getFilename()
-	csvFile, err := os.Open(filename)
+	csvFile, err := os.Open(*csvFilename)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -64,16 +66,6 @@ func main() {
 
 	// Show the user's stats
 	fmt.Printf("You answered %v/%v correct!\n", correctAnswers, totalQuestions)
-}
-
-// Checks if os.Args has "-csv filename.csv"
-// Otherwise, returns "problems.csv" as a default
-func getFilename() string {
-	if len(os.Args) == 3 && os.Args[1] == "-csv" {
-		return os.Args[2]
-	} else {
-		return "problems.csv"
-	}
 }
 
 // Gets user input from stdin
