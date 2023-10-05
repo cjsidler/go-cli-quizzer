@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"reflect"
 )
 
 /*
@@ -25,7 +26,10 @@ type problem struct {
 
 func main() {
 	csvFilename := flag.String("csv", "problems.csv", "a csv file in the format of `question,answer`")
+	quizTimer := flag.Int("timer", 30, "a time limit in seconds for the duration of the quiz")
 	flag.Parse()
+
+	fmt.Println(int(*quizTimer), reflect.TypeOf(*quizTimer))
 
 	// Get csv filename and open using a new csv reader
 	csvFile, err := os.Open(*csvFilename)
