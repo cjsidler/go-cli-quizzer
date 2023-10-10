@@ -31,13 +31,6 @@ func main() {
 	flag.IntVar(&quizTimer, "timer", 30, "a time limit in seconds for the duration of the quiz")
 	flag.Parse()
 
-	timer := time.NewTimer(time.Duration(quizTimer) * time.Second)
-
-	fmt.Println("timer started")
-	<-timer.C
-	fmt.Println("timer finished")
-	fmt.Println()
-
 	fmt.Printf("You have %v seconds. Time starts now!\n", quizTimer)
 
 	// Get csv filename and open using a new csv reader
@@ -56,6 +49,13 @@ func main() {
 	}
 
 	problems := parseLines(csvLines)
+
+	timer := time.NewTimer(time.Duration(quizTimer) * time.Second)
+
+	fmt.Println("timer started")
+	<-timer.C
+	fmt.Println("timer finished")
+	fmt.Println()
 
 	// Ask each question in csv and verify answer
 	for i, problem := range problems {
