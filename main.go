@@ -77,6 +77,7 @@ func main() {
 	fmt.Printf("You answered %v/%v correct!\n", correctAnswers, len(problems))
 }
 
+// Parse csv file into a slice of problems
 func parseLines(lines [][]string) []problem {
 	problems := make([]problem, len(lines))
 
@@ -90,7 +91,7 @@ func parseLines(lines [][]string) []problem {
 	return problems
 }
 
-// Gets user input from stdin
+// Gets user input from stdin and send it into answer channel
 func getUserAnswer(problem problem, problemNumber int, answerChan chan string) {
 	var userInput string
 	fmt.Printf("Question #%v: %v = ", problemNumber, problem.question)
