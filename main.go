@@ -51,26 +51,29 @@ func main() {
 	problems := parseLines(csvLines)
 
 	timer := time.NewTimer(time.Duration(quizTimer) * time.Second)
-
-	fmt.Println("timer started")
-	<-timer.C
-	fmt.Println("timer finished")
-	fmt.Println()
+	answerChan := make(chan string)
 
 	// Ask each question in csv and verify answer
 	for i, problem := range problems {
 		currentProblem := i + 1
-		userAnswer := getUserAnswer(problem, currentProblem)
 
-		if userAnswer == problem.answer {
-			fmt.Println("Correct!")
-			correctAnswers++
-		} else {
-			fmt.Printf("Incorrect. Your answer: %v (Correct answer: %v)\n", userAnswer, problem.answer)
+		go getUserAnswer(problem, currentProblem, answerChan)
+
+		select {
+		case <-timer.C:
+			fmt.Println()
+			fmt.Printf("Time is up! You answered %v/%v correct!\n", correctAnswers, len(problems))
+			return
+		case userAnswer := <-answerChan:
+			if userAnswer == problem.answer {
+				fmt.Println("Correct!")
+				correctAnswers++
+			} else {
+				fmt.Printf("Incorrect. Your answer: %v (Correct answer: %v)\n", userAnswer, problem.answer)
+			}
 		}
 	}
 
-	// Show the user's stats
 	fmt.Printf("You answered %v/%v correct!\n", correctAnswers, len(problems))
 }
 
@@ -88,11 +91,9 @@ func parseLines(lines [][]string) []problem {
 }
 
 // Gets user input from stdin
-func getUserAnswer(problem problem, problemNumber int) string {
-	var userAnswer string
-
+func getUserAnswer(problem problem, problemNumber int, answerChan chan string) {
+	var userInput string
 	fmt.Printf("Question #%v: %v = ", problemNumber, problem.question)
-	fmt.Scanln(&userAnswer)
-
-	return userAnswer
+	fmt.Scanln(&userInput)
+	answerChan <- userInput
 }
