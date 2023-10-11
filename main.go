@@ -31,7 +31,16 @@ func main() {
 	flag.IntVar(&quizTimer, "timer", 30, "a time limit in seconds for the duration of the quiz")
 	flag.Parse()
 
-	fmt.Printf("You have %v seconds. Time starts now!\n", quizTimer)
+	fmt.Println(`
+
+	 ██████  ██    ██ ██ ███████     ████████ ██ ███    ███ ███████ ██ 
+	██    ██ ██    ██ ██    ███         ██    ██ ████  ████ ██      ██ 
+	██    ██ ██    ██ ██   ███          ██    ██ ██ ████ ██ █████   ██ 
+	██ ▄▄ ██ ██    ██ ██  ███           ██    ██ ██  ██  ██ ██         
+	 ██████   ██████  ██ ███████        ██    ██ ██      ██ ███████ ██ 
+	    ▀▀                                                             
+	`)
+	fmt.Printf("You have %v seconds. Time starts now!\n\n", quizTimer)
 
 	// Get csv filename and open using a new csv reader
 	csvFile, err := os.Open(csvFilename)
@@ -71,6 +80,7 @@ func main() {
 			} else {
 				fmt.Printf("Incorrect. Your answer: %v (Correct answer: %v)\n", userAnswer, problem.answer)
 			}
+			fmt.Println()
 		}
 	}
 
